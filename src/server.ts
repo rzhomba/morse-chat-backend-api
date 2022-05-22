@@ -1,8 +1,9 @@
 import express from 'express'
+import cors from 'cors'
 import http from 'http'
 import cookieParser from 'cookie-parser'
 import mongoose from 'mongoose'
-import { applicationPort, dbConnection } from './utils/env'
+import { applicationPort, dbConnection, corsOrigin } from './utils/env'
 import { SIOServer, SIOSocket } from './types/socket.types'
 import registerListeners from './listeners'
 import router from './routes/index'
@@ -22,10 +23,19 @@ mongoose.connection
   })
 
 app.use(express.json())
+app.use(cors({
+  origin: corsOrigin,
+  optionsSuccessStatus: 200
+}))
 app.use(cookieParser())
 app.use(router)
 
-const io = new SIOServer(server)
+const io = new SIOServer(server, {
+  cors: {
+    origin: corsOrigin,
+    methods: ['GET', 'POST']
+  }
+})
 
 io.on('connection', async (socket: SIOSocket) => {
   console.log('user connected')
