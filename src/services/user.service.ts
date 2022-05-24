@@ -1,5 +1,14 @@
+import randomstring from 'randomstring'
 import { Chat } from '../models/chat'
 import { IUser } from '../types/user.interface'
+
+export const generateName = (): string => {
+  return randomstring.generate({
+    length: 4,
+    charset: 'alphabetic',
+    capitalization: 'uppercase'
+  })
+}
 
 export const initializeUser = async (key: string, name: string): Promise<IUser> => {
   const chat = await Chat.findOne({ key })

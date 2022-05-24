@@ -7,6 +7,7 @@ import { applicationPort, dbConnection, corsOrigin } from './utils/env'
 import { SIOServer, SIOSocket } from './types/socket.types'
 import registerListeners from './listeners'
 import router from './routes/index'
+import { socketAuth } from './middleware/auth'
 
 const app = express()
 const server = http.createServer(app)
@@ -25,6 +26,7 @@ mongoose.connection
 app.use(express.json())
 app.use(cors({
   origin: corsOrigin,
+  credentials: true,
   optionsSuccessStatus: 200
 }))
 app.use(cookieParser())
@@ -33,12 +35,13 @@ app.use(router)
 const io = new SIOServer(server, {
   cors: {
     origin: corsOrigin,
+    credentials: true,
     methods: ['GET', 'POST']
   }
 })
+io.use(socketAuth)
 
 io.on('connection', async (socket: SIOSocket) => {
-  console.log('user connected')
   await registerListeners(io, socket)
 })
 

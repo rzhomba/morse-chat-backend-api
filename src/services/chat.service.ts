@@ -20,7 +20,7 @@ export const findChat = async (key: string): Promise<IChat> => {
     .lean()
 
   if (!chat) {
-    throw new Error('Chat not found')
+    throw new Error(`Chat ${chat} not found`)
   }
 
   return chat
