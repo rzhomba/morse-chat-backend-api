@@ -9,4 +9,5 @@ if (config.error) {
 export const applicationPort = Number(config.parsed?.APPLICATION_PORT ?? 0)
 export const dbConnection = String(config.parsed?.DB_CONNECTION ?? '')
 export const corsOrigin = String(config.parsed?.CORS_ORIGIN ?? '')
+export const cookiesDomain = String(config.parsed?.COOKIES_DOMAIN ?? '')
 export const jwtSecret = String(config.parsed?.JWT_SECRET ?? '')

@@ -25,3 +25,10 @@ export const findChat = async (key: string): Promise<IChat> => {
 
   return chat
 }
+
+export const removeChat = async (key: string): Promise<void> => {
+  await Chat
+    .findOne({ key })
+    .remove()
+    .exec()
+}

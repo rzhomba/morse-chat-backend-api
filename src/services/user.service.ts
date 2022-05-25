@@ -32,3 +32,14 @@ export const removeUser = async (key: string, name: string): Promise<void> => {
   chat.users = chat.users.filter(i => i.name !== name)
   chat.save()
 }
+
+export const userJoined = async (key: string, name: string): Promise<boolean> => {
+  const user = await Chat.exists({
+    $and: [
+      { key },
+      { 'users.name': name }]
+  }).exec()
+
+  console.log(user !== null)
+  return user !== null
+}
