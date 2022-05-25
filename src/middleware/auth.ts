@@ -12,7 +12,7 @@ import { Chat } from '../models/chat'
  * additional check event in listener must be performed.
  */
 export const socketAuth = async (socket: SIOSocket, next: (err?: Error) => void): Promise<void> => {
-  const cookiesRaw = socket.handshake.headers.cookie
+  const cookiesRaw = socket.request.headers.cookie
   if (!cookiesRaw) {
     next()
     return
@@ -51,14 +51,16 @@ export const routeAuth = async (req: Request, res: Response, next: NextFunction)
 
   try {
     const result = await auth(token)
-    const queryKey = req.query.key as string
+    const queryKey = req.params.key as string
     if (!queryKey || result.key !== queryKey) {
       res.status(401).send()
       return
     }
 
-    req.params.key = result.key
-    req.body.user = result.user
+    res.locals.auth = {
+      key: result.key,
+      user: result.user
+    }
 
     next()
   } catch {
