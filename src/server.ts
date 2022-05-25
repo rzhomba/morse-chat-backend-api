@@ -1,13 +1,14 @@
 import express from 'express'
-import cors from 'cors'
 import http from 'http'
-import cookieParser from 'cookie-parser'
 import mongoose from 'mongoose'
-import { applicationPort, dbConnection, corsOrigin } from './utils/env'
-import { SIOServer, SIOSocket } from './types/socket.types'
-import registerListeners from './listeners'
+import cors from 'cors'
+import cookieParser from 'cookie-parser'
 import router from './routes/index'
+import { SocketIO } from './utils/socket-io'
+import { SIOSocket } from './types/socket.types'
 import { socketAuth } from './middleware/auth'
+import registerListeners from './listeners'
+import { applicationPort, dbConnection, corsOrigin } from './utils/env'
 
 const app = express()
 const server = http.createServer(app)
@@ -32,13 +33,14 @@ app.use(cors({
 app.use(cookieParser())
 app.use(router)
 
-const io = new SIOServer(server, {
+const io = SocketIO.instance().initialize(server, {
   cors: {
     origin: corsOrigin,
     credentials: true,
     methods: ['GET', 'POST']
   }
 })
+
 io.use(socketAuth)
 
 io.on('connection', async (socket: SIOSocket) => {
