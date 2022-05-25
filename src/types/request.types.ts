@@ -1,19 +1,29 @@
 import { Request, Response } from 'express'
-import { Query, Send } from 'express-serve-static-core'
+import { IChat } from './chat.interface'
 
-export interface TypedRequestBody<T> extends Request {
-  body: T
+interface ResponseLocals {
+  auth?: {
+    key: string
+    user: string
+  }
 }
 
-export interface TypedRequestQuery<T extends Query> extends Request {
-  query: T
+interface ChatData extends IChat {
+  user: string
 }
 
-export interface TypedRequest<T extends Query, U> extends Request {
-  body: U,
-  query: T
+interface SuccessData {
+  success: boolean
 }
 
-export interface TypedResponse<ResBody> extends Response {
-  json: Send<ResBody, this>;
+export interface ChatRequest extends Request {
+  params: { key: string }
+}
+
+export interface ChatResponse extends Response<ChatData> {
+  locals: ResponseLocals
+}
+
+export interface SuccessResponse extends Response<SuccessData> {
+  locals: ResponseLocals
 }
