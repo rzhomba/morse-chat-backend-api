@@ -40,6 +40,5 @@ export const userJoined = async (key: string, name: string): Promise<boolean> =>
       { 'users.name': name }]
   }).exec()
 
-  console.log(user !== null)
   return user !== null
 }
