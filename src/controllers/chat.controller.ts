@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express'
 import { initializeChat, findChat, removeChat } from '../services/chat.service'
-import { generateName, initializeUser, removeUser, userJoined } from '../services/user.service'
+import { generateName, initializeUser, findUser, removeUser } from '../services/user.service'
 import { createToken } from '../services/auth.service'
 import { IChat } from '../types/chat.interface'
 import { emitJoin, emitLeave } from '../services/sockets.service'
@@ -33,7 +33,7 @@ export const createChat = async (req: Request, res: ChatResponse, next?: NextFun
     key: resChat.key,
     users: resChat.users,
     messages: resChat.messages,
-    user: user.name
+    user
   })
 
   if (next) {
@@ -45,11 +45,14 @@ export const getChat = async (req: ChatRequest, res: ChatResponse, next?: NextFu
   const key = req.params.key
   const chat = await findChat(key)
 
+  const { auth } = res.locals
+  const user = await findUser(auth!.key, auth!.user)
+
   res.send({
     key: chat.key,
     users: chat.users,
     messages: chat.messages,
-    user: res.locals.auth?.user ?? ''
+    user
   })
 
   if (next) {

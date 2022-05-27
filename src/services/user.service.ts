@@ -23,6 +23,22 @@ export const initializeUser = async (key: string, name: string, role: UserRole =
   return user
 }
 
+export const findUser = async (key: string, name: string): Promise<IUser> => {
+  const query = await Chat
+    .aggregate([
+      { $match: { key } },
+      { $unwind: '$users' },
+      { $match: { 'users.name': name } },
+      { $project: { users: 1 } }
+    ])
+
+  if (!query || query.length === 0) {
+    throw new Error(`User ${name} not found`)
+  }
+
+  return query[0].users as IUser
+}
+
 export const removeUser = async (key: string, name: string): Promise<void> => {
   const chat = await Chat.findOne({ key })
   if (!chat) {
@@ -31,14 +47,4 @@ export const removeUser = async (key: string, name: string): Promise<void> => {
 
   chat.users = chat.users.filter(i => i.name !== name)
   chat.save()
-}
-
-export const userJoined = async (key: string, name: string): Promise<boolean> => {
-  const user = await Chat.exists({
-    $and: [
-      { key },
-      { 'users.name': name }]
-  }).exec()
-
-  return user !== null
 }

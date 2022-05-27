@@ -1,5 +1,6 @@
 import { Request, Response } from 'express'
 import { IChat } from './chat.interface'
+import { IUser } from './user.interface'
 
 interface ResponseLocals {
   auth?: {
@@ -9,7 +10,7 @@ interface ResponseLocals {
 }
 
 interface ChatData extends IChat {
-  user: string
+  user: IUser
 }
 
 interface SuccessData {
