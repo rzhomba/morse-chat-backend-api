@@ -5,12 +5,13 @@ import { createToken } from '../services/auth.service'
 import { IChat } from '../types/chat.interface'
 import { emitJoin, emitLeave } from '../services/sockets.service'
 import { ChatRequest, ChatResponse, SuccessResponse } from '../types/request.types'
-import { IUser } from '../types/user.interface'
+import { IUser, UserRole } from '../types/user.interface'
 import { cookiesDomain } from '../utils/env'
 
-const createUser = async (res: Response, chat: IChat): Promise<IUser> => {
+const createUser = async (res: Response, chat: IChat, admin: boolean = false): Promise<IUser> => {
   const name = generateName()
-  const user = await initializeUser(chat.key, name)
+  const role: UserRole = admin ? 'admin' : 'member'
+  const user = await initializeUser(chat.key, name, role)
   const token = await createToken(chat.key, user.name)
   await emitJoin(chat.key, user.name)
 
@@ -25,7 +26,7 @@ const createUser = async (res: Response, chat: IChat): Promise<IUser> => {
 
 export const createChat = async (req: Request, res: ChatResponse, next?: NextFunction) => {
   const chat = await initializeChat()
-  const user = await createUser(res, chat)
+  const user = await createUser(res, chat, true)
 
   const resChat = await findChat(chat.key)
   res.send({

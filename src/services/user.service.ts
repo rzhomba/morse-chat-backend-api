@@ -1,6 +1,6 @@
 import randomstring from 'randomstring'
 import { Chat } from '../models/chat'
-import { IUser } from '../types/user.interface'
+import { IUser, UserRole } from '../types/user.interface'
 
 export const generateName = (): string => {
   return randomstring.generate({
@@ -10,13 +10,13 @@ export const generateName = (): string => {
   })
 }
 
-export const initializeUser = async (key: string, name: string): Promise<IUser> => {
+export const initializeUser = async (key: string, name: string, role: UserRole = 'member'): Promise<IUser> => {
   const chat = await Chat.findOne({ key })
   if (!chat) {
     throw new Error('Chat not found')
   }
 
-  const user = { name } as IUser
+  const user = { name, role } as IUser
   chat.users.push(user)
   await chat.save()
 

@@ -5,7 +5,8 @@ import { IChat } from '../types/chat.interface'
 const { Schema, model } = mongoose
 
 const userSchema = new Schema<IUser>({
-  name: { type: String, required: true }
+  name: { type: String, required: true },
+  role: { type: String, required: true }
 })
 
 const messageSchema = new Schema<IMessage>({
