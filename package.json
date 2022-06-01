@@ -1,4 +1,14 @@
 {
+  "name": "morse-chat-backend-api",
+  "description": "Backend REST API for morse chat app",
+  "version": "0.1.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rzhomba/morse-chat-backend-api.git"
+  },
+  "author": "rzhomba",
+  "license": "MIT",
+  "homepage": "https://github.com/rzhomba/morse-chat-backend-api",
   "type": "module",
   "scripts": {
     "watch": "nodemon -e ts -w ./src -x npm run run",
